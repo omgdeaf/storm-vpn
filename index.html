@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шторм VPN — защищённое соединение</title>
+<meta name="description" content="Шторм VPN — сервис защищённого соединения и шифрования интернет-трафика. Подключение через Telegram-бот.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b1020;
+    --bg2: #121a33;
+    --card: #161f3d;
+    --line: #243056;
+    --text: #e8ecf8;
+    --muted: #9aa6c7;
+    --accent: #5b8cff;
+    --accent2: #8f6bff;
+    --ok: #3ddc97;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: Manrope, system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgba(11,16,32,.85); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; color: var(--text); white-space: nowrap; }
+  header .btn { white-space: nowrap; }
+  .logo-mark { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(135deg, var(--accent), var(--accent2)); font-size: 18px; }
+  nav { display: flex; gap: 22px; font-size: 15px; }
+  nav a { color: var(--muted); }
+  nav a:hover { color: var(--text); text-decoration: none; }
+
+  .btn { display: inline-block; padding: 14px 26px; border-radius: 12px; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; box-shadow: 0 8px 30px rgba(91,140,255,.35); transition: transform .15s; }
+  .btn:hover { transform: translateY(-2px); text-decoration: none; }
+  .btn.ghost { background: transparent; border: 1px solid var(--line); box-shadow: none; color: var(--text); }
+
+  .hero { padding: 90px 0 70px; text-align: center; background: radial-gradient(ellipse at top, rgba(91,140,255,.18), transparent 60%); }
+  .hero h1 { font-size: clamp(34px, 6vw, 58px); line-height: 1.1; font-weight: 800; margin-bottom: 20px; }
+  .hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p { font-size: 19px; color: var(--muted); max-width: 640px; margin: 0 auto 34px; }
+  .hero .actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+  section { padding: 70px 0; }
+  h2 { font-size: clamp(26px, 4vw, 36px); font-weight: 800; margin-bottom: 12px; text-align: center; }
+  .sub { color: var(--muted); text-align: center; margin-bottom: 44px; }
+
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+  .card .ico { font-size: 30px; margin-bottom: 12px; }
+  .card h3 { font-size: 18px; margin-bottom: 8px; }
+  .card p { color: var(--muted); font-size: 15px; }
+
+  .price { text-align: center; position: relative; }
+  .price.best { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 12px 40px rgba(91,140,255,.25); }
+  .badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, var(--accent), var(--accent2)); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+  .price .term { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .price .sum { font-size: 40px; font-weight: 800; }
+  .price .per { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .price ul { list-style: none; text-align: left; font-size: 14px; color: var(--muted); margin-bottom: 22px; }
+  .price li { padding: 4px 0; }
+  .price li::before { content: "✓ "; color: var(--ok); font-weight: 700; }
+  .price .btn { width: 100%; padding: 12px; }
+
+  .steps { counter-reset: s; }
+  .steps .card { position: relative; padding-top: 54px; }
+  .steps .card::before { counter-increment: s; content: counter(s); position: absolute; top: 20px; left: 26px; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+
+  .doc { background: var(--bg2); border: 1px solid var(--line); border-radius: 18px; padding: clamp(22px, 4vw, 44px); font-size: 15px; color: #c9d1ea; }
+  .doc h3 { color: var(--text); font-size: 17px; margin: 26px 0 8px; }
+  .doc h3:first-child { margin-top: 0; }
+  .doc p, .doc li { margin-bottom: 8px; }
+  .doc ol, .doc ul { padding-left: 22px; }
+  details { border-top: 1px solid var(--line); }
+  details:last-child { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; padding: 18px 4px; font-weight: 700; font-size: 17px; list-style: none; display: flex; justify-content: space-between; }
+  summary::after { content: "+"; color: var(--accent); font-size: 22px; line-height: 1; }
+  details[open] summary::after { content: "–"; }
+  details .doc { margin-bottom: 20px; }
+
+  .req { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; font-size: 15px; }
+  .req dt { color: var(--muted); }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    nav { display: none; }
+  }
+  @media (max-width: 720px) {
+    .hero { padding: 60px 0 50px; }
+    section { padding: 50px 0; }
+    .req { grid-template-columns: 1fr; gap: 2px; }
+    .req dd { margin-bottom: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="#"><span class="logo-mark">⚡</span>Шторм VPN</a>
+    <nav>
+      <a href="#features">Возможности</a>
+      <a href="#prices">Тарифы</a>
+      <a href="#how">Подключение</a>
+      <a href="#docs">Документы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <a class="btn" style="padding:10px 18px" href="https://t.me/omgdeafvpn_bot">Подключить</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Защищённое соединение<br><span>в один тап</span></h1>
+    <p>Шторм VPN шифрует ваш интернет-трафик и защищает данные в публичных Wi‑Fi сетях. Подключение за минуту через Telegram-бот.</p>
+    <div class="actions">
+      <a class="btn" href="https://t.me/omgdeafvpn_bot">🚀 Попробовать 3 дня бесплатно</a>
+      <a class="btn ghost" href="#prices">Тарифы</a>
+    </div>
+  </div>
+</div>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Почему Шторм VPN</h2>
+    <p class="sub">Всё, что нужно для безопасной работы в сети</p>
+    <div class="grid">
+      <div class="card"><div class="ico">🔐</div><h3>Шифрование трафика</h3><p>Современный протокол VLESS + Reality — ваши данные недоступны посторонним.</p></div>
+      <div class="card"><div class="ico">⚡</div><h3>Высокая скорость</h3><p>Без ограничений скорости и объёма трафика. Серверы в Европе.</p></div>
+      <div class="card"><div class="ico">📱</div><h3>Все устройства</h3><p>iPhone, Android, Windows, macOS — один ключ на всех ваших устройствах.</p></div>
+      <div class="card"><div class="ico">🛟</div><h3>Поддержка</h3><p>Поможем с подключением в Telegram — отвечаем быстро.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="prices" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2>Тарифы</h2>
+    <p class="sub">Первые 3 дня — бесплатно. Оплата картой или через СБП.</p>
+    <div class="grid">
+      <div class="card price">
+        <div class="term">1 месяц</div><div class="sum">199 ₽</div><div class="per">199 ₽ / мес</div>
+        <ul><li>Безлимитный трафик</li><li>Все устройства</li><li>Поддержка 24/7</li></ul>
+        <a class="btn" href="https://t.me/omgdeafvpn_bot">Купить</a>
+      </div>
+      <div class="card price">
+        <div class="term">3 месяца</div><div class="sum">449 ₽</div><div class="per">150 ₽ / мес</div>
+        <ul><li>Безлимитный трафик</li><li>Все устройства</li><li>Экономия 25%</li></ul>
+        <a class="btn" href="https://t.me/omgdeafvpn_bot">Купить</a>
+      </div>
+      <div class="card price best">
+        <span class="badge">Популярный</span>
+        <div class="term">6 месяцев</div><div class="sum">849 ₽</div><div class="per">142 ₽ / мес</div>
+        <ul><li>Безлимитный трафик</li><li>Все устройства</li><li>Экономия 29%</li></ul>
+        <a class="btn" href="https://t.me/omgdeafvpn_bot">Купить</a>
+      </div>
+      <div class="card price">
+        <div class="term">12 месяцев</div><div class="sum">1549 ₽</div><div class="per">129 ₽ / мес</div>
+        <ul><li>Безлимитный трафик</li><li>Все устройства</li><li>Экономия 35%</li></ul>
+        <a class="btn" href="https://t.me/omgdeafvpn_bot">Купить</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>Как подключиться</h2>
+    <p class="sub">Четыре шага — и вы под защитой</p>
+    <div class="grid steps">
+      <div class="card"><h3>Откройте бота</h3><p>Перейдите в Telegram-бот <a href="https://t.me/omgdeafvpn_bot">@omgdeafvpn_bot</a> и нажмите «Старт».</p></div>
+      <div class="card"><h3>Выберите тариф</h3><p>Возьмите пробный период или оплатите подписку картой / СБП.</p></div>
+      <div class="card"><h3>Получите ключ</h3><p>Сразу после оплаты бот пришлёт персональный ключ доступа и инструкцию.</p></div>
+      <div class="card"><h3>Подключитесь</h3><p>Вставьте ключ в приложение (Hiddify, v2rayNG, Streisand) и включите защиту.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="docs" style="background:var(--bg2)">
+  <div class="wrap">
+    <h2>Документы</h2>
+    <p class="sub">Публичная оферта и политика обработки данных</p>
+
+    <details id="oferta">
+      <summary>Публичная оферта на оказание услуг</summary>
+      <div class="doc">
+        <h3>1. Общие положения</h3>
+        <p>1.1. Настоящий документ является публичной офертой (ст. 437 ГК РФ) плательщика налога на профессиональный доход <b>ФИО ИСПОЛНИТЕЛЯ</b>, ИНН 551905584261 (далее — Исполнитель), и содержит условия оказания услуг сервиса «Шторм VPN» любому лицу (далее — Заказчик).</p>
+        <p>1.2. Акцептом оферты является оплата услуг. С момента оплаты договор считается заключённым на условиях настоящей оферты.</p>
+
+        <h3>2. Предмет договора</h3>
+        <p>2.1. Исполнитель предоставляет Заказчику доступ к сервису защищённого соединения (шифрования интернет-трафика) на оплаченный срок, а Заказчик оплачивает услуги по тарифам, опубликованным на сайте и в Telegram-боте @omgdeafvpn_bot.</p>
+        <p>2.2. Доступ предоставляется в виде персонального ключа, который направляется Заказчику в Telegram-бот после оплаты.</p>
+
+        <h3>3. Стоимость и порядок оплаты</h3>
+        <p>3.1. Стоимость: 1 месяц — 199 ₽; 3 месяца — 449 ₽; 6 месяцев — 849 ₽; 12 месяцев — 1549 ₽. НДС не облагается (Исполнитель применяет НПД).</p>
+        <p>3.2. Оплата производится банковской картой или через Систему быстрых платежей (СБП) с помощью сервиса ЮKassa. Исполнитель не получает и не хранит данные банковских карт.</p>
+        <p>3.3. Услуга считается оказанной с момента предоставления ключа доступа. Чек формируется и направляется Заказчику в соответствии с законодательством РФ.</p>
+
+        <h3>4. Права и обязанности сторон</h3>
+        <p>4.1. Исполнитель обязуется обеспечивать работоспособность сервиса и оказывать техническую поддержку.</p>
+        <p>4.2. Заказчик обязуется использовать сервис исключительно в законных целях, не передавать ключ третьим лицам и не использовать сервис для действий, нарушающих законодательство Российской Федерации.</p>
+        <p>4.3. Исполнитель вправе приостановить доступ при нарушении Заказчиком п. 4.2 без возврата денежных средств.</p>
+        <p>4.4. Исполнитель вправе проводить технические работы, по возможности заранее уведомив Заказчика.</p>
+
+        <h3>5. Возврат денежных средств</h3>
+        <p>5.1. Если Заказчик не смог воспользоваться сервисом по вине Исполнителя и проблема не была решена поддержкой в течение 3 (трёх) суток, Исполнитель возвращает стоимость неиспользованного периода.</p>
+        <p>5.2. Для возврата Заказчик направляет запрос в поддержку с указанием даты оплаты. Возврат производится тем же способом, которым была произведена оплата, в течение 10 рабочих дней.</p>
+
+        <h3>6. Ответственность</h3>
+        <p>6.1. Исполнитель не несёт ответственности за перебои в работе, вызванные действиями интернет-провайдера Заказчика, третьих лиц или обстоятельствами непреодолимой силы.</p>
+        <p>6.2. Совокупная ответственность Исполнителя ограничивается суммой, уплаченной Заказчиком за текущий период.</p>
+
+        <h3>7. Прочие условия</h3>
+        <p>7.1. Исполнитель вправе изменять условия оферты, публикуя новую редакцию на сайте. Изменения не распространяются на уже оплаченный период.</p>
+        <p>7.2. Споры решаются путём переговоров, а при недостижении согласия — в порядке, установленном законодательством РФ.</p>
+      </div>
+    </details>
+
+    <details id="privacy">
+      <summary>Политика обработки персональных данных</summary>
+      <div class="doc">
+        <p>1. Исполнитель обрабатывает только данные, необходимые для оказания услуги: идентификатор и имя пользователя Telegram, сведения об оплатах и сроке подписки.</p>
+        <p>2. Сервис не ведёт журналы посещаемых Заказчиком сайтов и не анализирует содержимое трафика.</p>
+        <p>3. Платёжные данные обрабатываются платёжным сервисом ЮKassa и Исполнителю не передаются.</p>
+        <p>4. Данные не передаются третьим лицам, за исключением случаев, предусмотренных законодательством РФ.</p>
+        <p>5. Заказчик может запросить удаление своих данных, написав в поддержку.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="contacts">
+  <div class="wrap">
+    <h2>Контакты и реквизиты</h2>
+    <p class="sub">Остались вопросы — напишите нам</p>
+    <div class="card" style="max-width:640px;margin:0 auto">
+      <dl class="req">
+        <dt>Исполнитель</dt><dd><b>ФИО ИСПОЛНИТЕЛЯ</b>, самозанятый (плательщик НПД)</dd>
+        <dt>ИНН</dt><dd>551905584261</dd>
+        <dt>Telegram-бот</dt><dd><a href="https://t.me/omgdeafvpn_bot">@omgdeafvpn_bot</a></dd>
+        <dt>Поддержка</dt><dd><a href="https://t.me/SUPPORT_USERNAME">@SUPPORT_USERNAME</a></dd>
+        <dt>E-mail</dt><dd><a href="mailto:EMAIL@example.com">EMAIL@example.com</a></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Шторм VPN. ФИО ИСПОЛНИТЕЛЯ, ИНН 551905584261</div>
+    <div><a href="#oferta">Оферта</a> · <a href="#privacy">Политика конфиденциальности</a></div>
+  </div>
+</footer>
+
+<script>
+  // Открываем нужный документ при переходе по ссылке #oferta / #privacy
+  function openFromHash() {
+    const el = document.querySelector(location.hash || '#none');
+    if (el && el.tagName === 'DETAILS') el.open = true;
+  }
+  window.addEventListener('hashchange', openFromHash);
+  openFromHash();
+</script>
+</body>
+</html>
